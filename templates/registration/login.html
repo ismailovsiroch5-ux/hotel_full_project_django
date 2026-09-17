@@ -1,0 +1,30 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Tizimga Kirish{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card p-4 shadow border-0 rounded-4">
+                <h3 class="fw-bold text-center mb-4"><i class="fa-solid fa-right-to-bracket me-2 text-warning"></i> Tizimga Kirish</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Foydalanuvchi nomi (Username):</label>
+                        <input type="text" name="username" class="form-control form-control-lg" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Parol:</label>
+                        <input type="password" name="password" class="form-control form-control-lg" required>
+                    </div>
+                    <button type="submit" class="btn btn-gold w-100 py-3 mt-3 fs-5 shadow">Kirish</button>
+                </form>
+                <div class="text-center mt-4">
+                    <small class="text-muted">Profilingiz yo'qmi? <a href="{% url 'register' %}" class="fw-bold text-gold">Ro'yxatdan o'ting</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

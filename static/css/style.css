@@ -1,0 +1,68 @@
+/* Custom Styles for Grand Royal Hotel */
+:root {
+    --primary-dark: #111827;
+    --accent-gold: #d97706;
+    --accent-gold-hover: #b45309;
+    --bg-light: #f9fafb;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-light);
+    color: #1f2937;
+}
+
+.navbar-custom {
+    background-color: var(--primary-dark);
+    padding: 1rem 0;
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--accent-gold) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-gold {
+    background-color: var(--accent-gold);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: var(--accent-gold-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.hero-section {
+    background: linear-gradient(rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.75)), 
+                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    color: white;
+    padding: 120px 0;
+    text-align: center;
+}
+
+.card-room {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card-room:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+footer {
+    background-color: var(--primary-dark);
+    color: #9ca3af;
+    padding: 60px 0 30px;
+}

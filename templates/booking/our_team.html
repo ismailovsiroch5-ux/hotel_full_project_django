@@ -1,0 +1,70 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Jamoamiz - Grand Royal Hotel{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Bizning Oshpazlarimiz</h2>
+        <p class="text-muted">Har bir taom ortida tajribali va mehr bilan ishlaydigan mutaxassislar turadi</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        {% for chef in chefs %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3">
+                {% if chef.photo %}
+                    <img src="{{ chef.photo.url }}" class="rounded-circle mx-auto mt-3" style="width:140px; height:140px; object-fit:cover;" alt="{{ chef.full_name }}">
+                {% else %}
+                    <div class="rounded-circle mx-auto mt-3 d-flex align-items-center justify-content-center bg-light" style="width:140px; height:140px;">
+                        <i class="fa-solid fa-user-chef fs-1 text-warning"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1">{{ chef.full_name }}</h5>
+                    <p class="text-warning small fw-bold mb-2">{{ chef.specialty }}</p>
+                    {% if chef.experience_years %}
+                        <p class="text-muted small mb-2"><i class="fa-solid fa-award me-1"></i>{{ chef.experience_years }} yillik tajriba</p>
+                    {% endif %}
+                    <p class="text-muted small">{{ chef.bio }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="text-muted fs-5">Hozircha oshpazlar ma'lumoti qo'shilmagan.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Administratsiya</h2>
+        <p class="text-muted">Mehmonxonamiz faoliyatini boshqaruvchi jamoa</p>
+    </div>
+
+    <div class="row g-4">
+        {% for admin in admins %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3">
+                {% if admin.photo %}
+                    <img src="{{ admin.photo.url }}" class="rounded-circle mx-auto mt-3" style="width:140px; height:140px; object-fit:cover;" alt="{{ admin.full_name }}">
+                {% else %}
+                    <div class="rounded-circle mx-auto mt-3 d-flex align-items-center justify-content-center bg-light" style="width:140px; height:140px;">
+                        <i class="fa-solid fa-user-tie fs-1 text-warning"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1">{{ admin.full_name }}</h5>
+                    <p class="text-warning small fw-bold mb-2">{{ admin.position }}</p>
+                    <p class="text-muted small">{{ admin.bio }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="text-muted fs-5">Hozircha administratorlar ma'lumoti qo'shilmagan.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

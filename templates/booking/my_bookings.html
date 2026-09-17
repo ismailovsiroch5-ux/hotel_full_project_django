@@ -1,0 +1,56 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Mening Bronlarim - Grand Royal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="fw-bold mb-4"><i class="fa-solid fa-list-check me-2 text-warning"></i> Mening Bronlarim</h2>
+    
+    {% if bookings %}
+    <div class="table-responsive shadow-sm rounded-4">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-dark">
+                <tr>
+                    <th class="py-3"># ID</th>
+                    <th class="py-3">Xona Tafsilotlari</th>
+                    <th class="py-3">Kelish Sanasi</th>
+                    <th class="py-3">Ketish Sanasi</th>
+                    <th class="py-3">Jami Summa</th>
+                    <th class="py-3">Holati</th>
+                    <th class="py-3">Bron Vaqti</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td class="fw-bold">#{{ b.id }}</td>
+                    <td>
+                        <strong>Xona #{{ b.room.number }}</strong><br>
+                        <small class="text-muted">{{ b.room.room_type.title }}</small>
+                    </td>
+                    <td><i class="fa-solid fa-calendar-day text-muted me-1"></i> {{ b.check_in }}</td>
+                    <td><i class="fa-solid fa-calendar-day text-muted me-1"></i> {{ b.check_out }}</td>
+                    <td class="fw-bold text-success fs-5">${{ b.total_price }}</td>
+                    <td>
+                        {% if b.status == 'confirmed' %}
+                            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i> Tasdiqlangan</span>
+                        {% elif b.status == 'pending' %}
+                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-clock me-1"></i> Kutilmoqda</span>
+                        {% else %}
+                            <span class="badge bg-danger px-3 py-2 rounded-pill">{{ b.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="small text-muted">{{ b.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info rounded-4 p-4 shadow-sm">
+        <h4 class="alert-heading fw-bold"><i class="fa-solid fa-info-circle me-2"></i> Bronlar topilmadi</h4>
+        <p class="mb-0">Sizda hali hech qanday faol bron mavjud emas. Xonalarni ko'rish va bron qilish uchun <a href="{% url 'room_list' %}" class="fw-bold">katalogga o'ting</a>.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

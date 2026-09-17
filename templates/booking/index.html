@@ -1,0 +1,144 @@
+{% extends 'booking/base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Oliy Darajadagi Shinamlik va Qulaylik</h1>
+        <p class="lead mb-4 fs-4">O'zingiz va oilangiz uchun eng munosib xonalarni onlayn bron qiling.</p>
+        <a href="{% url 'room_list' %}" class="btn btn-gold btn-lg px-5 py-3 shadow"><i class="fa-solid fa-calendar-check me-2"></i> Xonalarni Ko'rish</a>
+    </div>
+</div>
+
+<!-- Mehmonxona haqida -->
+<div class="container my-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow" alt="Grand Royal Hotel">
+        </div>
+        <div class="col-lg-6">
+            <div class="mb-2">
+                <i class="fa-solid fa-star text-warning"></i>
+                <i class="fa-solid fa-star text-warning"></i>
+                <i class="fa-solid fa-star text-warning"></i>
+                <i class="fa-solid fa-star text-warning"></i>
+                <i class="fa-solid fa-star text-warning"></i>
+                <span class="text-muted ms-2">5 Yulduzli Mehmonxona</span>
+            </div>
+            <h2 class="fw-bold mb-3">Grand Royal Hotel Haqida</h2>
+            <p class="text-muted fs-5">
+                2023-yildan beri Toshkent shahrining markazida joylashgan Grand Royal Hotel mehmonlarga
+                yuqori darajadagi xizmat, zamonaviy dizayn va sharqona mehmondo'stlikni uyg'unlashtirib taqdim etib kelmoqda.
+                Har bir xona did bilan jihozlangan, har bir tafsilot qulaylik va nafosat uchun o'ylab tuzilgan.
+            </p>
+            <div class="row g-4 mt-3">
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-warning mb-0">2023</h3>
+                    <small class="text-muted">Ochilgan yili</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-warning mb-0">50+</h3>
+                    <small class="text-muted">Shinam xonalar</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-warning mb-0">10k+</h3>
+                    <small class="text-muted">Mamnun mehmonlar</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-warning mb-0">24/7</h3>
+                    <small class="text-muted">Xizmat ko'rsatish</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Qulayliklar -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Nega Aynan Biz?</h2>
+            <p class="text-muted">Har bir mehmon uchun eng yuqori sifat va qulaylik</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-3 col-6">
+                <i class="fa-solid fa-wifi fs-1 text-warning mb-3"></i>
+                <h6 class="fw-bold">Bepul Wi-Fi</h6>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="fa-solid fa-utensils fs-1 text-warning mb-3"></i>
+                <h6 class="fw-bold">Shved Stoli Nonushta</h6>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="fa-solid fa-spa fs-1 text-warning mb-3"></i>
+                <h6 class="fw-bold">SPA va Fitnes Markaz</h6>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="fa-solid fa-car fs-1 text-warning mb-3"></i>
+                <h6 class="fw-bold">Bepul Avtoturargoh</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Eng Ommabop Xonalarimiz</h2>
+        <p class="text-muted">Mijozlarimiz tomonidan eng yuqori baholangan qulayliklar</p>
+    </div>
+
+    <div class="row g-4">
+        {% for room in room_types %}
+        <div class="col-md-4">
+            <div class="card card-room h-100">
+                {% if room.image %}
+                    <img src="{{ room.image.url }}" class="card-img-top" alt="{{ room.title }}" style="height:240px; object-fit:cover;">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Hotel Room" style="height:240px; object-fit:cover;">
+                {% endif %}
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="card-title fw-bold fs-4 mb-2">{{ room.title }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">{{ room.description|truncatewords:15 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <div>
+                            <span class="fs-4 fw-bold text-success">${{ room.price_per_night }}</span>
+                            <small class="text-muted"> / kecha</small>
+                        </div>
+                        <a href="{% url 'room_detail' room.id %}" class="btn btn-gold">Batafsil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <p class="text-muted fs-5">Hozircha xonalar qo'shilmagan. Admin paneldan xonalarni kiriting.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Menyu va Jamoa taklifi -->
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="p-4 bg-dark text-white rounded-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <i class="fa-solid fa-utensils fs-1 text-warning mb-3"></i>
+                    <h4 class="fw-bold">Restoranimiz Menyusi</h4>
+                    <p class="text-white-50">Milliy va yevropa taomlaridan tashkil topgan boy menyu bilan tanishing.</p>
+                </div>
+                <a href="{% url 'menu' %}" class="btn btn-gold align-self-start mt-3">Menyuni Ko'rish</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 rounded-4 h-100 d-flex flex-column justify-content-between" style="background:#f8f5ef;">
+                <div>
+                    <i class="fa-solid fa-people-group fs-1 text-warning mb-3"></i>
+                    <h4 class="fw-bold">Bizning Jamoamiz</h4>
+                    <p class="text-muted">Tajribali oshpazlar va administratorlar siz uchun xizmat qiladi.</p>
+                </div>
+                <a href="{% url 'our_team' %}" class="btn btn-outline-dark align-self-start mt-3">Jamoa Bilan Tanishish</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

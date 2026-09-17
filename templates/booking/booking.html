@@ -1,0 +1,48 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    <!-- Inputlar va tugma -->
+    <button type="submit">Bron qilishni tasdiqlash</button>
+</form>
+    
+    <div>
+        <label>Kelish sanasi:</label>
+        {{ form.check_in }}
+    </div>
+
+    <div>
+        <label>Ketish sanasi:</label>
+        {{ form.check_out }}
+    </div>
+
+    <div style="margin-top: 15px; background: #f9f9f9; padding: 10px;">
+        <p>Qolish muddati: <strong id="nights_count">0</strong> kecha</p>
+        <p>Jami summa: <strong style="color: green;">$<span id="total_price">0</span></strong></p>
+    </div>
+
+    <button type="submit" id="submit_btn" style="margin-top: 10px;">Bron Qilishni Tasdiqlash</button>
+</form>
+
+<script>
+function calculateTotal() {
+    const checkInInput = document.getElementById('check_in').value;
+    const checkOutInput = document.getElementById('check_out').value;
+    const pricePerNight = JSON.parse(document.getElementById('price-per-night-data').textContent); // Kunlik narx
+
+    if (checkInInput && checkOutInput) {
+        const dateIn = new Date(checkInInput);
+        const dateOut = new Date(checkOutInput);
+
+        // Sanalar farqini kunlarda topish
+        const diffTime = dateOut - dateIn;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 0) {
+            document.getElementById('nights_count').innerText = diffDays;
+            document.getElementById('total_price').innerText = diffDays * pricePerNight;
+        } else {
+            document.getElementById('nights_count').innerText = 0;
+            document.getElementById('total_price').innerText = 0;
+        }
+    }
+}
+</script>
