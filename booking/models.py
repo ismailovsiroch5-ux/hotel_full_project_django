@@ -53,6 +53,37 @@ class Booking(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed', verbose_name="Holati")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqt")
 
+    PAYMENT_METHOD_CHOICES = (
+        ('click', 'Click'),
+        ('payme', 'Payme'),
+    )
+    PAYMENT_STATUS_CHOICES = (
+        ('unpaid', "To'lanmagan"),
+        ('paid', "Oldindan to'lov qilingan"),
+        ('failed', "To'lov amalga oshmadi"),
+    )
+
+    prepayment_percent = models.PositiveIntegerField(
+        choices=[(30, "30%"), (50, "50%")],
+        default=30,
+        verbose_name="Oldindan to'lov foizi"
+    )
+    prepaid_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        verbose_name="Oldindan to'langan summa ($)"
+    )
+    payment_method = models.CharField(
+        max_length=10, choices=PAYMENT_METHOD_CHOICES,
+        blank=True, null=True, verbose_name="To'lov turi"
+    )
+    payment_status = models.CharField(
+        max_length=10, choices=PAYMENT_STATUS_CHOICES,
+        default='unpaid', verbose_name="To'lov holati"
+    )
+    transaction_id = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name="Tranzaksiya ID"
+    )
+
     def clean(self):
         if self.check_in and self.check_out:
             if self.check_in >= self.check_out:
@@ -76,6 +107,7 @@ class Booking(models.Model):
             nights = (self.check_out - self.check_in).days
             if nights > 0:
                 self.total_price = nights * self.room.room_type.price_per_night
+                self.prepaid_amount = (self.total_price * self.prepayment_percent) / 100
         self.full_clean()
         super().save(*args, **kwargs)
 

@@ -24,8 +24,31 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Custom Apps
+    'rest_framework',
     'booking',
+    'payme',
+    'click_uz',
 ]
+
+PAYME_ID = os.environ.get('PAYME_ID', 'test-payme-id-bu-yerga')
+PAYME_KEY = os.environ.get('PAYME_KEY', 'test-payme-key-bu-yerga')
+PAYME_ACCOUNT_FIELD = 'id'
+PAYME_AMOUNT_FIELD = 'prepaid_amount'
+PAYME_ACCOUNT_MODEL = 'booking.models.Booking'
+PAYME_ONE_TIME_PAYMENT = True
+
+CLICK = {
+    "SERVICE_ID": int(os.environ.get('CLICK_SERVICE_ID', 0)),
+    "MERCHANT_ID": int(os.environ.get('CLICK_MERCHANT_ID', 0)),
+    "SECRET_KEY": os.environ.get('CLICK_SECRET_KEY', 'test-secret'),
+    "ACCOUNT_MODEL": "booking.models.Booking",
+    "AMOUNT_FIELD": "prepaid_amount",
+    "STATUS_FIELD": "payment_status",
+    "STATUS_PENDING": "unpaid",
+    "STATUS_WAITING": "unpaid",
+    "STATUS_PAID": "paid",
+    "STATUS_CANCELLED": "failed",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -45,14 +45,32 @@
                         <input type="date" class="form-control form-control-lg" id="check_out" name="check_out" min="{{ today }}" required>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Oldindan to'lov:</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="prepayment_percent" id="p30" value="30" checked onchange="calculateTotal()">
+                                <label class="form-check-label" for="p30">30%</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="prepayment_percent" id="p50" value="50" onchange="calculateTotal()">
+                                <label class="form-check-label" for="p50">50%</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="p-3 bg-light rounded-3 mb-4">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Qolish muddati:</span>
                             <span id="daysCount" class="fw-bold">0 kecha</span>
                         </div>
-                        <div class="d-flex justify-content-between fs-5">
+                        <div class="d-flex justify-content-between mb-2">
                             <span class="fw-bold">Jami summa:</span>
                             <span id="totalPrice" class="fw-bold text-success">$0</span>
+                        </div>
+                        <div class="d-flex justify-content-between fs-5 pt-2 border-top">
+                            <span class="fw-bold">Hozir to'lanadi:</span>
+                            <span id="prepayAmount" class="fw-bold text-danger">$0</span>
                         </div>
                     </div>
 
@@ -82,6 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const checkOutInput = document.getElementById('check_out');
     const daysCountEl = document.getElementById('daysCount');
     const totalPriceEl = document.getElementById('totalPrice');
+    const prepayAmountEl = document.getElementById('prepayAmount');
+
+    function getSelectedPercent() {
+        const checked = document.querySelector('input[name="prepayment_percent"]:checked');
+        return checked ? parseInt(checked.value) : 30;
+    }
 
     function calculateTotal() {
         if (checkInInput.value && checkOutInput.value) {
@@ -90,14 +114,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
 
             if (diffDays > 0) {
+                const total = diffDays * pricePerNight;
+                const percent = getSelectedPercent();
+                const prepay = (total * percent) / 100;
+
                 daysCountEl.innerText = diffDays + " kecha";
-                totalPriceEl.innerText = "$" + (diffDays * pricePerNight).toFixed(2);
+                totalPriceEl.innerText = "$" + total.toFixed(2);
+                prepayAmountEl.innerText = "$" + prepay.toFixed(2);
             } else {
                 daysCountEl.innerText = "0 kecha";
                 totalPriceEl.innerText = "$0";
+                prepayAmountEl.innerText = "$0";
             }
         }
     }
+
+    // Global qilib beramiz, chunki HTML ichida onchange="calculateTotal()" ishlatilgan
+    window.calculateTotal = calculateTotal;
 
     if (checkInInput && checkOutInput) {
         checkInInput.addEventListener('change', calculateTotal);

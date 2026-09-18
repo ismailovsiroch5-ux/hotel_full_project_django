@@ -1,6 +1,7 @@
-from django.urls import path
+from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from . import views
+from payme.views import PaymeWebHookAPIView
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -13,4 +14,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
     path('menu/', views.menu, name='menu'),
     path('jamoamiz/', views.our_team, name='our_team'),
+    path('payme/update/', PaymeWebHookAPIView.as_view()),
+    path('click/', include('click_uz.urls')),
+    path('payment/<int:booking_id>/', views.start_payment, name='start_payment'),
 ]

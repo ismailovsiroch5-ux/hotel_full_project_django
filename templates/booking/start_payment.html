@@ -1,0 +1,12 @@
+{% extends 'booking/base.html' %}
+{% block content %}
+<div class="container my-5 text-center">
+    <h3 class="fw-bold mb-4">To'lov usulini tanlang</h3>
+    <p class="text-muted">Bron: Xona #{{ booking.room.number }} | To'lanishi kerak: <strong>${{ booking.prepaid_amount }}</strong> ({{ booking.prepayment_percent }}%)</p>
+    <form method="post" class="d-flex gap-3 justify-content-center mt-4">
+        {% csrf_token %}
+        <button type="submit" name="payment_method" value="click" class="btn btn-lg btn-primary px-5">Click orqali to'lash</button>
+        <button type="submit" name="payment_method" value="payme" class="btn btn-lg btn-success px-5">Payme orqali to'lash</button>
+    </form>
+</div>
+{% endblock %}
