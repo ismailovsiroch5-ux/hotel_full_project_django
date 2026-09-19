@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+﻿from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
 from django.conf import settings
 from datetime import datetime, date
 
-from .models import RoomType, Room, Booking, MenuCategory, Chef, Administrator
+from .models import RoomType, Room, Booking, MenuCategory, MenuItem, Chef, Administrator, FoodOrder, FoodOrderItem
 from .forms import UserRegisterForm
 from .forms import BookingForm
 
@@ -157,3 +157,101 @@ def our_team(request):
     chefs = Chef.objects.all()
     admins = Administrator.objects.all()
     return render(request, 'booking/our_team.html', {'chefs': chefs, 'admins': admins})
+def get_active_booking(user):
+    today = date.today()
+    return Booking.objects.filter(
+        user=user,
+        status='confirmed',
+        check_in__lte=today,
+        check_out__gte=today
+    ).first()
+
+
+def add_to_cart(request, item_id):
+    item = get_object_or_404(MenuItem, id=item_id, is_available=True)
+    quantity = int(request.POST.get('quantity', 1))
+    if quantity < 1:
+        quantity = 1
+
+    cart = request.session.get('cart', {})
+    item_id_str = str(item_id)
+    cart[item_id_str] = cart.get(item_id_str, 0) + quantity
+    request.session['cart'] = cart
+    request.session.modified = True
+
+    messages.success(request, f"{item.name} savatga qo'shildi!")
+    return redirect('menu')
+
+
+def remove_from_cart(request, item_id):
+    cart = request.session.get('cart', {})
+    cart.pop(str(item_id), None)
+    request.session['cart'] = cart
+    request.session.modified = True
+    return redirect('cart_view')
+
+
+def cart_view(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total = 0
+
+    for item_id_str, quantity in cart.items():
+        try:
+            item = MenuItem.objects.get(id=int(item_id_str))
+        except MenuItem.DoesNotExist:
+            continue
+        subtotal = item.price * quantity
+        total += subtotal
+        cart_items.append({'item': item, 'quantity': quantity, 'subtotal': subtotal})
+
+    active_booking = None
+    if request.user.is_authenticated:
+        active_booking = get_active_booking(request.user)
+
+    return render(request, 'booking/cart.html', {
+        'cart_items': cart_items,
+        'total': total,
+        'active_booking': active_booking,
+    })
+
+
+@login_required
+def checkout_order(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.error(request, "Savatingiz bo'sh!")
+        return redirect('menu')
+
+    active_booking = get_active_booking(request.user)
+    if not active_booking:
+        messages.error(request, "Buyurtma berish uchun aktiv (joriy) broningiz bo'lishi shart!")
+        return redirect('cart_view')
+
+    order = FoodOrder.objects.create(user=request.user, booking=active_booking)
+    total = 0
+
+    for item_id_str, quantity in cart.items():
+        try:
+            item = MenuItem.objects.get(id=int(item_id_str))
+        except MenuItem.DoesNotExist:
+            continue
+        FoodOrderItem.objects.create(order=order, menu_item=item, quantity=quantity, price=item.price)
+        total += item.price * quantity
+
+    order.total_price = total
+    order.save()
+
+    request.session['cart'] = {}
+    request.session.modified = True
+
+    messages.success(request, f"Buyurtmangiz qabul qilindi! Xona #{active_booking.room.number}ga yetkaziladi.")
+    return redirect('my_orders')
+
+
+@login_required
+def my_orders(request):
+    orders = FoodOrder.objects.filter(user=request.user).prefetch_related('items')
+    return render(request, 'booking/my_orders.html', {'orders': orders})
+
+

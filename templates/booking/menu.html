@@ -4,9 +4,17 @@
 
 {% block content %}
 <div class="container my-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">Restoranimiz Menyusi</h2>
-        <p class="text-muted">Milliy va yevropa taomlaridan tashkil topgan boy tanlov</p>
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Restoranimiz Menyusi</h2>
+            <p class="text-muted mb-0">Milliy va yevropa taomlaridan tashkil topgan boy tanlov</p>
+        </div>
+        <a href="{% url 'cart_view' %}" class="btn btn-gold position-relative">
+            <i class="fa-solid fa-cart-shopping me-2"></i>Savat
+            {% if cart_count %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ cart_count }}</span>
+            {% endif %}
+        </a>
     </div>
 
     {% for category in categories %}
@@ -29,7 +37,14 @@
                                     <h6 class="fw-bold mb-1">{{ item.name }}</h6>
                                     <span class="fw-bold text-success">${{ item.price }}</span>
                                 </div>
-                                <p class="text-muted small mb-0">{{ item.description }}</p>
+                                <p class="text-muted small mb-2">{{ item.description }}</p>
+                                <form action="{% url 'add_to_cart' item.id %}" method="post" class="d-flex align-items-center gap-2">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="1" min="1" max="20" class="form-control form-control-sm" style="width: 70px;">
+                                    <button type="submit" class="btn btn-sm btn-outline-dark">
+                                        <i class="fa-solid fa-cart-plus me-1"></i>Savatga
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

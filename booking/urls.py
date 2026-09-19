@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
-from . import views
 from payme.views import PaymeWebHookAPIView
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -17,4 +17,9 @@ urlpatterns = [
     path('payme/update/', PaymeWebHookAPIView.as_view()),
     path('click/', include('click_uz.urls')),
     path('payment/<int:booking_id>/', views.start_payment, name='start_payment'),
+    path('savat/qoshish/<int:item_id>/', views.add_to_cart, name='add_to_cart'),
+    path('savat/ochirish/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('savat/', views.cart_view, name='cart_view'),
+    path('savat/tasdiqlash/', views.checkout_order, name='checkout_order'),
+    path('zakazlarim/', views.my_orders, name='my_orders'),
 ]

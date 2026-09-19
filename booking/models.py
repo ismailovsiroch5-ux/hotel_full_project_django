@@ -179,3 +179,41 @@ class Administrator(models.Model):
         verbose_name = "Administrator"
         verbose_name_plural = "Administratorlar"
         ordering = ['order']
+
+class FoodOrder(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Kutilmoqda'),
+        ('preparing', 'Tayyorlanmoqda'),
+        ('delivered', 'Yetkazildi'),
+        ('cancelled', 'Bekor qilingan'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='food_orders', verbose_name="Foydalanuvchi")
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='food_orders', verbose_name="Bron")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="Holati")
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Jami summa ($)")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Buyurtma vaqti")
+
+    def __str__(self):
+        return f"Zakaz #{self.id} - {self.user.username} (Xona {self.booking.room.number})"
+
+    class Meta:
+        verbose_name = "Zakaz"
+        verbose_name_plural = "Zakazlar"
+        ordering = ['-created_at']
+
+
+class FoodOrderItem(models.Model):
+    order = models.ForeignKey(FoodOrder, on_delete=models.CASCADE, related_name='items', verbose_name="Zakaz")
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, verbose_name="Taom")
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Soni")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Narxi (buyurtma paytida)")
+
+    def get_subtotal(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return f"{self.menu_item.name} x{self.quantity}"
+
+    class Meta:
+        verbose_name = "Zakaz Taomi"
+        verbose_name_plural = "Zakaz Taomlari"
